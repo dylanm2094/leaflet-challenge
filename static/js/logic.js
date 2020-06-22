@@ -25,11 +25,6 @@ function createMap(eqSites) {
     layers: [lightmap, eqSites]
   });
 
-  // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: true
-  }).addTo(map);
-
   var legend = L.control({position: 'bottomright'});
   legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend'),
@@ -64,7 +59,7 @@ function createMarkers(response) {
       weight: 1,
       fillColor: magColor(site.properties.mag),
       radius:  markerSize(site.properties.mag)
-    }).bindPopup("<h3>" + site.properties.place + "<h3><h3>Magnitude: " + site.properties.mag + "</h3>");
+    }).bindPopup("<h3>" + site.properties.place + "<h3><h3>Time: " + Date(site.properties.time) +"<h3><h3>Magnitude: " + site.properties.mag + "</h3>");
 
     // Add the marker to the eqSites array
     eqSites.push(eqSite);
