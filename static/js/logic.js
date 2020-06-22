@@ -28,11 +28,10 @@ function createMap(eqSites) {
   var legend = L.control({position: 'bottomright'});
   legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend'),
-      grades = [0, 1, 2, 3, 4, 5],
-      labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
+      grades = [0, 1, 2, 3, 4, 5];
     for (var i = 0; i < grades.length; i++) {
-        div.innerHTML +=
-            '<i style="background:' + magColor(grades[i] + 1) + '"></i> ' +
+        div.innerHTML += 
+            '<i style="background:' + magColor(grades[i]+0.1) + '"></i> ' +
             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
     }
     return div;
