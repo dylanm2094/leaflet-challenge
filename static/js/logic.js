@@ -27,8 +27,22 @@ function createMap(eqSites) {
 
   // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
   L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
+    collapsed: true
   }).addTo(map);
+
+  var legend = L.control({position: 'bottomright'});
+  legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend'),
+      grades = [0, 1, 2, 3, 4, 5],
+      labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + magColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+    return div;
+  };
+  legend.addTo(map);
 }
 
 function createMarkers(response) {
@@ -44,8 +58,13 @@ function createMarkers(response) {
     var site = features[index];
 
     // For each site, create a marker and bind a popup with the site's name
-    var eqSite = L.marker([site.geometry.coordinates[1], site.geometry.coordinates[0]])
-      .bindPopup("<h3>" + site.properties.place + "<h3><h3>Magnitude: " + site.properties.mag + "</h3>");
+    var eqSite = L.circleMarker([site.geometry.coordinates[1], site.geometry.coordinates[0]],{
+      fillOpacity: 0.5,
+      color: "black",
+      weight: 1,
+      fillColor: magColor(site.properties.mag),
+      radius:  markerSize(site.properties.mag)
+    }).bindPopup("<h3>" + site.properties.place + "<h3><h3>Magnitude: " + site.properties.mag + "</h3>");
 
     // Add the marker to the eqSites array
     eqSites.push(eqSite);
@@ -53,6 +72,22 @@ function createMarkers(response) {
 
   // Create a layer group made from the earthquake markers array, pass it into the createMap function
   createMap(L.layerGroup(eqSites));
+}
+
+function magColor(magnitude) {
+  return magnitude > 5 ? "red":
+    magnitude > 4 ? "orangered":
+    magnitude > 3 ? "orange":
+    magnitude > 2 ? "yellow":
+    magnitude > 1 ? "yellowgreen":
+    "green";
+}
+
+//----------------------------------------------------------------------------
+// Function to amplify circle size by earthquake magnitude
+//----------------------------------------------------------------------------
+function markerSize(magnitude) {
+  return magnitude * 3;
 }
 
 
